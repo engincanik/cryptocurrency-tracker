@@ -1,7 +1,8 @@
-package com.engin.cryptocurrencytracker
+package com.engin.cryptocurrencytracker.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.engin.cryptocurrencytracker.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
