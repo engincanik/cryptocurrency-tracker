@@ -2,7 +2,10 @@ package com.engin.cryptocurrencytracker.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.engin.cryptocurrencytracker.R
+import com.engin.cryptocurrencytracker.adapter.CurrencyAdapter
 import com.engin.cryptocurrencytracker.model.CryptoCurrencyModel
 import com.engin.cryptocurrencytracker.service.CryptocurrencyAPI
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -15,12 +18,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivity : AppCompatActivity() {
     private val BASE_URL = "https://api.nomics.com/v1/"
     private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var currencyList: List<CryptoCurrencyModel>
+    private var currencyList: List<CryptoCurrencyModel> = arrayListOf()
     private lateinit var selectedCurrencies: String
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        recyclerView = findViewById(R.id.currencyRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+//        recyclerView.adapter = CurrencyAdapter(currencyList)
         compositeDisposable = CompositeDisposable()
         selectedCurrencies = "BTC"
         getData()
@@ -48,10 +55,21 @@ class MainActivity : AppCompatActivity() {
                 println(currency.logoUrl)
             }
         }
+        recyclerView.adapter = CurrencyAdapter(currencyList)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
+    }
+
+    private fun selectCurrencies(selectedCoins: List<String>) {
+        val coins = selectedCoins.joinToString(",")
+        if (selectedCurrencies == "") {
+            selectedCurrencies = coins
+        } else {
+            selectedCurrencies += ",$coins"
+        }
+        getData()
     }
 }
